@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">BeWell</string>
+    <string name="action_settings">Settings</string>
+    <string name="device_settings">Connect</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+    <string name="pref_title_care_giver_phone">Caregiver phone number</string>
+    <string name="pref_title_care_giver_message">Caregiver message</string>
+
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Wearable Notifications</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_led">LED light</string>
+
+    <string name="pref_title_haptic_intensity">Intensity</string>
+    <string name="pref_title_led_color">Color</string>
+
+    <string-array name="pref_haptic_list_titles">
+        <item>High</item>
+        <item>Medium</item>
+        <item>Low</item>
+    </string-array>
+    <string-array name="pref_haptic_list_values">
+        <item>1000</item>
+        <item>750</item>
+        <item>500</item>
+    </string-array>
+
+    <string-array name="pref_led_list_titles">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+    </string-array>
+    <string-array name="pref_led_list_values">
+        <item>#ffff0000</item>
+        <item>#ff00ff00</item>
+        <item>#ff0000ff</item>
+    </string-array>
+    <string name="title_activity_device_scanning">DeviceScanningActivity</string>
+
+    <string name="scan_button_text">Scan</string>
+    <string name="stop_scan_button_text">Stop</string>
+    <string name="no_devices_detected">No devices detected</string>
+    <string name="title_activity_device_pairing">DevicePairingActivity</string>
+
+    // Pairing resources
+    <string name="pairing_to_text">Pairing to...</string>
+    <string name="battery_level">Battery level:</string>
+    <string name="software_revision">Software revision:</string>
+    <string name="unknown">Unknown</string>
+    <string name="connect_device_button">Connect</string>
+    <string name="disconnect_device_button">Disconnect</string>
+    <string name="pair_device_button">Pair</string>
+    <string name="unpair_device_button">Unpair</string>
+    <string name="paired_text">Paired</string>
+    <string name="connecting_to_text">Connecting to...</string>
+    <string name="connected_to_text">Connected to...</string>
+    <string name="paired_to_text">Paired to...</string>
+    <string name="not_paired_to_text">Not paired to...</string>
+    <string name="connected_text">Connected</string>
+
+</resources>
