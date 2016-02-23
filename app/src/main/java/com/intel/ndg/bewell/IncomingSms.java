@@ -33,6 +33,10 @@ public class IncomingSms extends BroadcastReceiver {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
             final String care_giver_phone_number = prefs.getString("caregiver_phone_number", "");
             final String care_giver_message = prefs.getString("caregiver_message", "");
+            final Boolean led_switch = prefs.getBoolean("led_switch", false);
+            final Integer led_color = Integer.decode(prefs.getString("led_list", ""));
+            final Boolean haptic_switch = prefs.getBoolean("haptic_switch", false);
+            final Integer haptic_intensity = Integer.decode(prefs.getString("haptic_list", ""));
 
             if (bundle != null) {
 
@@ -58,21 +62,44 @@ public class IncomingSms extends BroadcastReceiver {
 
                         IWearableController wearableController = DevicePairingActivity.sWearableController;
                         INotificationController mNotificationController = wearableController.getNotificationController();
+                        WearableNotification.VibrationPattern vibrationPattern = null;
+                        WearableNotification.LedPattern ledPattern = null;
+
                         if (mNotificationController != null) {
-                            WearableNotification.LedPattern ledPattern =
-                                    new WearableNotification.LedPattern(
-                                            WearableNotification.LedPattern.Type.LED_BLINK,
-                                            0, //id
-                                            null, //rgb color list
-                                            2, //repetition count
-                                            255);//intensity
-                            ledPattern.addDuration(new WearableNotification.DurationPattern(500,500));
-                            int r = 255;
-                            int g = 1;
-                            int b = 1;
-                            ledPattern.addRGBColor(new WearableNotification.RGBColor(r, g, b));
-                            WearableNotification notification = new WearableNotification(ledPattern);
+                            if (led_switch) {
+                                ledPattern = new WearableNotification.LedPattern(
+                                                WearableNotification.LedPattern.Type.LED_BLINK,
+                                                0, //id
+                                                null, //rgb color list
+                                                2, //repetition count
+                                                255);//intensity
+                                ledPattern.addDuration(new WearableNotification.DurationPattern(500, 500));
+                                int r = (led_color >> 16) & 0xFF;
+                                int g = (led_color >> 8) & 0xFF;
+                                int b = (led_color >> 0) & 0xFF;
+                                ledPattern.addRGBColor(new WearableNotification.RGBColor(r, g, b));
+                            }
+                            if (haptic_switch) {
+                                vibrationPattern = new WearableNotification.VibrationPattern(
+                                                WearableNotification.VibrationPattern.Type.VIBRA_SQUARE,
+                                                haptic_intensity, 2);
+                                vibrationPattern.addDuration(
+                                        new WearableNotification.DurationPattern(500,500));
+                            }
+
+                            // Build notification
+                            WearableNotification notification = null;
+                            if (ledPattern != null & vibrationPattern != null) {
+                                notification = new WearableNotification(vibrationPattern, ledPattern, 0);
+                            } else if (ledPattern != null) {
+                                notification = new WearableNotification(ledPattern);
+                            } else if (vibrationPattern != null) {
+                                notification = new WearableNotification(vibrationPattern);
+                            }
                             mNotificationController.sendNotification(notification);
+
+
+
                         }
                     }
 

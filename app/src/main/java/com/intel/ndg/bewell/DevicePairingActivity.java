@@ -15,8 +15,8 @@ import com.intel.wearable.platform.core.device.WearableBatteryStatus;
 import com.intel.wearable.platform.core.device.WearableControllerFactory;
 import com.intel.wearable.platform.core.device.WearableToken;
 import com.intel.wearable.platform.core.device.listeners.IWearableControllerListener;
+import com.intel.wearable.platform.core.event.user.UserEventController;
 import com.intel.wearable.platform.core.model.datastore.WearableIdentity;
-import com.intel.wearable.platform.core.notification.INotificationController;
 
 public class DevicePairingActivity extends AppCompatActivity implements IWearableControllerListener {
 
@@ -213,6 +213,8 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(true);
+                // Subscribe to user events
+                UserEventController.subscribe(new WearableUserEventManager());
                 break;
             case CONNECTING:
                 mPairingTitleTextView.setText(R.string.connecting_to_text);
@@ -231,6 +233,9 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setEnabled(false);
                 break;
             case NOT_PAIRED:
+                // Unsubscribe to user events
+                UserEventController.unsubscribe();
+
                 mPairingTitleTextView.setText(R.string.not_paired_to_text);
                 mPairingProgressBar.setVisibility(View.GONE);
                 mConnectDeviceButton.setText(R.string.connect_device_button);

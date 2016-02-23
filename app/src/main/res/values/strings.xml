@@ -26,9 +26,9 @@
         <item>Low</item>
     </string-array>
     <string-array name="pref_haptic_list_values">
-        <item>1000</item>
-        <item>750</item>
-        <item>500</item>
+        <item>255</item>
+        <item>128</item>
+        <item>64</item>
     </string-array>
 
     <string-array name="pref_led_list_titles">
@@ -37,9 +37,9 @@
         <item>Blue</item>
     </string-array>
     <string-array name="pref_led_list_values">
-        <item>#ffff0000</item>
-        <item>#ff00ff00</item>
-        <item>#ff0000ff</item>
+        <item>0xFF0000</item>
+        <item>0x00FF00</item>
+        <item>0x0000FF</item>
     </string-array>
     <string name="title_activity_device_scanning">DeviceScanningActivity</string>
 
