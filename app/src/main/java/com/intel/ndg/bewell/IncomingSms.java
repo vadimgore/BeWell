@@ -98,7 +98,8 @@ public class IncomingSms extends BroadcastReceiver {
                             }
                             mNotificationController.sendNotification(notification);
 
-
+                            // Setting CR Response waiting state
+                            Application.setCRResponseWaitingState(true);
 
                         }
                     }

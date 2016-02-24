@@ -13,6 +13,7 @@ public class Application extends android.app.Application {
 
     private static Application instance;
     private static boolean mIsInitialized = false;
+    private static boolean mAwatingCRResponse = false;
 
     @Override
     public void onCreate() {
@@ -35,4 +36,6 @@ public class Application extends android.app.Application {
     public static final boolean isInitialized(){
         return mIsInitialized;
     }
+    public static final boolean ismAwatingCRResponse() { return mAwatingCRResponse; }
+    public static void setCRResponseWaitingState(boolean state) { mAwatingCRResponse = state; }
 }
