@@ -7,25 +7,8 @@ import android.telephony.SmsManager;
  */
 public class OutgoingSms {
     private final SmsManager mSmsManager = SmsManager.getDefault();
-    public enum resposeType {
-        OKAY,
-        NOT_OKAY,
-        EMERGENCY
-    };
 
-    public void sendCRResponse(resposeType type) {
-        switch (type) {
-            case OKAY:
-                mSmsManager.sendTextMessage("6507966522", null, "I am Okay!", null, null);
-                break;
-            case NOT_OKAY:
-                mSmsManager.sendTextMessage("6507966522", null, "I need help", null, null);
-                break;
-            case EMERGENCY:
-                mSmsManager.sendTextMessage("6507966522", null, "I have emergency", null, null);
-                break;
-            default:
-                // do nothing
-        }
+    public void sendCRResponse(String phone_number, String message) {
+        mSmsManager.sendTextMessage(phone_number, null, message, null, null);
     }
 }

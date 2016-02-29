@@ -214,7 +214,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(true);
                 // Subscribe to user events
-                UserEventController.subscribe(new WearableUserEventManager());
+                UserEventController.subscribe(new WearableUserEventManager(getApplicationContext()));
                 break;
             case CONNECTING:
                 mPairingTitleTextView.setText(R.string.connecting_to_text);

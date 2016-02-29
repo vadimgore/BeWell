@@ -12,4 +12,9 @@
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />
 
+    <header
+        android:fragment="com.intel.ndg.bewell.SettingsActivity$UserResponsePreferenceFragment"
+        android:icon="@drawable/ic_sync_black_24dp"
+        android:title="@string/pref_header_user_response" />
+
 </preference-headers>

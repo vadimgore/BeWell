@@ -20,6 +20,14 @@
     <string name="pref_title_haptic_intensity">Intensity</string>
     <string name="pref_title_led_color">Color</string>
 
+    <!-- Example settings for User events -->
+    <string name="pref_header_user_response">User Response</string>
+    <string name="pref_title_double_tap">Double tap</string>
+    <string name="pref_title_tripple_tap">Tripple tap</string>
+    <string name="pref_title_single_button_press">Single button press</string>
+    <string name="pref_title_double_button_press">Double button press</string>
+    <string name="pref_title_long_button_press">Long button press</string>
+
     <string-array name="pref_haptic_list_titles">
         <item>High</item>
         <item>Medium</item>

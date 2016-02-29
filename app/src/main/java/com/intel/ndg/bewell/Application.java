@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.intel.wearable.platform.core.Core;
 import com.intel.wearable.platform.core.ICoreInitListener;
-import java.util.logging.Logger;
 
 /**
  * Created by Vadim on 2/20/2016.
@@ -12,8 +11,8 @@ import java.util.logging.Logger;
 public class Application extends android.app.Application {
 
     private static Application instance;
-    private static boolean mIsInitialized = false;
-    private static boolean mAwatingCRResponse = false;
+    private static boolean sIsInitialized = false;
+    private static boolean sAwatingCRResponse = false;
 
     @Override
     public void onCreate() {
@@ -22,8 +21,8 @@ public class Application extends android.app.Application {
     }
 
     public static final void init(ICoreInitListener initListener){
-        if (!mIsInitialized) {
-            mIsInitialized = true;
+        if (!sIsInitialized) {
+            sIsInitialized = true;
             byte[] key = new byte[64];
             Core.init(getContext(), initListener, key);
         }
@@ -34,8 +33,8 @@ public class Application extends android.app.Application {
     }
 
     public static final boolean isInitialized(){
-        return mIsInitialized;
+        return sIsInitialized;
     }
-    public static final boolean ismAwatingCRResponse() { return mAwatingCRResponse; }
-    public static void setCRResponseWaitingState(boolean state) { mAwatingCRResponse = state; }
+    public static final boolean isAwatingCRResponse() { return sAwatingCRResponse; }
+    public static void setCRResponseWaitingState(boolean state) { sAwatingCRResponse = state; }
 }
