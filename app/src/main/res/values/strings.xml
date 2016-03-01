@@ -49,15 +49,16 @@
         <item>0x00FF00</item>
         <item>0x0000FF</item>
     </string-array>
-    <string name="title_activity_device_scanning">DeviceScanningActivity</string>
+    <string name="title_activity_device_scanning">Wearable Device Discovery</string>
 
     <string name="scan_button_text">Scan</string>
     <string name="stop_scan_button_text">Stop</string>
     <string name="no_devices_detected">No devices detected</string>
-    <string name="title_activity_device_pairing">DevicePairingActivity</string>
+    <string name="title_activity_device_pairing">Wearable Device Configuration</string>
 
     // Pairing resources
     <string name="pairing_to_text">Pairing to...</string>
+    <string name="unpairing_from_text">Unpairing from...</string>
     <string name="battery_level">Battery level:</string>
     <string name="software_revision">Software revision:</string>
     <string name="unknown">Unknown</string>

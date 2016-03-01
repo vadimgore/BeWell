@@ -2,7 +2,6 @@ package com.intel.ndg.bewell;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,15 +33,17 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
     private TextView mBatteryLevelTextView;
     private TextView mSoftwareRevisionTextView;
 
-    public static IWearableController sWearableController;
+    private static IWearableController mWearableController;
     //public static INotificationController NotificationController;
 
     enum PairingUiState{
         ERROR,
         NOT_PAIRED,
         PAIRING,
+        UNPAIRING,
         PAIRED,
         CONNECTING,
+        DISCONNECTING,
         CONNECTED
     }
 
@@ -50,7 +51,8 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
         NO_ERRORS,
         NO_EXTRA,
         NO_TOKEN,
-        NO_CONTROLLER
+        NO_CONTROLLER,
+        EXCEPTION
     }
 
     @Override
@@ -74,11 +76,11 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mDeviceNameTextView.setText(mToken.getDisplayName());
                 mDeviceIDTextView.setText(mToken.getAddress());
 
-                sWearableController = WearableControllerFactory.getWearableController(mToken, this);
-                if (sWearableController.isConnected()) {
+                mWearableController = WearableControllerFactory.getWearableController(mToken, this);
+                if (mWearableController.isConnected()) {
                     resetUi(PairingUiState.CONNECTED, PairingErrorType.NO_ERRORS);
-                    sWearableController.getBatteryStatus();
-                } else if (sWearableController.isPaired()) {
+                    mWearableController.getBatteryStatus();
+                } else if (mWearableController.isPaired()) {
                     resetUi(PairingUiState.PAIRED, PairingErrorType.NO_ERRORS);
                 } else {
                     resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
@@ -91,6 +93,9 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
         }
     }
 
+    public static IWearableController getWearableController() {
+        return mWearableController;
+    }
 
     @Override
     protected void onStop() {
@@ -102,79 +107,130 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
     private boolean pair(){
         String errorMsg = null;
         try {
-            Log.d(TAG, "mController.pair()");
-            sWearableController.pair();
+            Log.d(TAG, "mWearableController.pair()");
+            if (!mWearableController.isPaired()) {
+                resetUi(PairingUiState.PAIRING, PairingErrorType.NO_ERRORS);
+                mWearableController.pair();
+            } else {
+                resetUi(PairingUiState.PAIRED, PairingErrorType.NO_ERRORS);
+            }
         } catch (Throwable throwable) {
             errorMsg = throwable.getMessage();
             Log.d(TAG, "pair: " + errorMsg);
+            resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, errorMsg);
         }
         if(errorMsg != null) {
             Toast.makeText(getApplication(), errorMsg, Toast.LENGTH_LONG).show();
             Log.d(TAG, "pair: " + errorMsg);
         }
+
+        return errorMsg == null;
+    }
+
+    private boolean unpair(){
+        String errorMsg = null;
+        try {
+            Log.d(TAG, "mController.unpair()");
+            if (mWearableController.isPaired()) {
+                resetUi(PairingUiState.UNPAIRING, PairingErrorType.NO_ERRORS);
+                mWearableController.unpair();
+            } else {
+                resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
+            }
+        } catch (Throwable throwable) {
+            errorMsg = throwable.getMessage();
+            Log.d(TAG, "unpair: " + errorMsg);
+            resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, errorMsg);
+        }
+
+        if(errorMsg != null) {
+            Toast.makeText(getApplication(), errorMsg, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "unpair: " + errorMsg);
+        }
+
         return errorMsg == null;
     }
 
     private boolean connect(){
         String errorMsg = null;
         try {
-            Log.d(TAG, "mController.connect()");
-            sWearableController.connect();
+            Log.d(TAG, "mWearableController.connect()");
+            if (!mWearableController.isConnected()) {
+                resetUi(PairingUiState.CONNECTING, PairingErrorType.NO_ERRORS);
+                mWearableController.connect();
+            } else {
+                resetUi(PairingUiState.CONNECTED, PairingErrorType.NO_ERRORS);
+            }
         } catch (Throwable throwable) {
             errorMsg = throwable.getMessage();
             Log.d(TAG, "connect: " + errorMsg);
+            resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, errorMsg);
         }
 
         if( errorMsg != null ) {
             Toast.makeText(getApplication(), errorMsg, Toast.LENGTH_LONG).show();
         }
+
+        return errorMsg == null;
+    }
+
+    private boolean disconnect(){
+        String errorMsg = null;
+        try {
+            Log.d(TAG, "mWearableController.disconnect()");
+            if (mWearableController.isConnected()) {
+                resetUi(PairingUiState.DISCONNECTING, PairingErrorType.NO_ERRORS);
+                mWearableController.disconnect();
+            } else {
+                resetUi(mWearableController.isPaired() ? PairingUiState.PAIRED : PairingUiState.NOT_PAIRED,
+                        PairingErrorType.NO_ERRORS);
+            }
+
+
+        } catch (Throwable throwable) {
+            errorMsg = throwable.getMessage();
+            Log.d(TAG, "disconnect: " + errorMsg);
+            resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, errorMsg);
+        }
+
+        if( errorMsg != null ) {
+            Toast.makeText(getApplication(), errorMsg, Toast.LENGTH_LONG).show();
+        }
+
         return errorMsg == null;
     }
 
     public void onConnectClicked(View view) {
+        boolean status = true;
         if(mPairingUiState == PairingUiState.CONNECTED) {
-            boolean disconnect = sWearableController.disconnect();
-            Log.d(TAG, "disconnect ok ? " + disconnect);
-            resetUi(PairingUiState.PAIRED, PairingErrorType.NO_ERRORS);
+            status = disconnect();
         }
         else{
-            if(connect()){
-                resetUi(PairingUiState.CONNECTING, PairingErrorType.NO_ERRORS);
-            }
+            status = connect();
         }
-        // on all other options - we will not enable the button
+
+//        resetUi(mWearableController.isPaired() ? PairingUiState.PAIRED : PairingUiState.NOT_PAIRED,
+//                PairingErrorType.NO_ERRORS);
+
+        Log.d(TAG, "connect/disconnect status ok ? " + status);
     }
 
     public void onPairClicked(View view) {
+        boolean status = true;
         if(mPairingUiState == PairingUiState.NOT_PAIRED) {
-            if(pair()) {
-                Log.d(TAG, "paired... OK");
-                resetUi(PairingUiState.PAIRING, PairingErrorType.NO_ERRORS);
-            }
-            else{
-                Log.d(TAG, "paired... not OK");
-            }
+            status = pair();
         }
         else if(mPairingUiState == PairingUiState.PAIRED) {
-            Log.d(TAG, "try to unpair");
-            sWearableController.unpair();
-            resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
+            status = unpair();
         }
-        // on all other options - we will not enable the button
+
+        resetUi(mWearableController.isPaired() ? PairingUiState.PAIRED : PairingUiState.NOT_PAIRED,
+                PairingErrorType.NO_ERRORS);
+
+        Log.d(TAG, "pair/unpair status ok ? " + status);
     }
 
-    private void resetUi(PairingUiState pairingUiState, PairingErrorType errorType){
-        String deviceSoftwareRevision = null;
-        if (sWearableController != null) {
-            final WearableIdentity wearableIdentity = sWearableController.getWearableIdentity();
-            if (wearableIdentity != null) {
-                deviceSoftwareRevision = wearableIdentity.getSoftwareRevision();
-            }
-        }
-        if(TextUtils.isEmpty(deviceSoftwareRevision)){
-            deviceSoftwareRevision = getString(R.string.unknown);
-        }
-        mSoftwareRevisionTextView.setText(deviceSoftwareRevision);
+    private void resetUi(PairingUiState pairingUiState, PairingErrorType errorType, String... erroMsg){
 
         mPairingUiState = pairingUiState;
         switch (pairingUiState){
@@ -190,19 +246,30 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                     case NO_CONTROLLER:
                         error += "no controller";
                         break;
+                    case EXCEPTION:
+                        error += erroMsg[0];
+                        break;
                 }
                 mPairingTitleTextView.setText(error);
                 mPairingProgressBar.setVisibility(View.GONE);
                 mConnectDeviceButton.setText(R.string.connect_device_button);
                 mPairDeviceButton.setText(R.string.pair_device_button);
-                mConnectDeviceButton.setEnabled(false);
-                mPairDeviceButton.setEnabled(false);
+                mConnectDeviceButton.setEnabled(true);
+                mPairDeviceButton.setEnabled(true);
                 break;
             case PAIRING:
                 mPairingTitleTextView.setText(R.string.pairing_to_text);
                 mPairingProgressBar.setVisibility(View.VISIBLE);
                 mConnectDeviceButton.setText(R.string.connect_device_button);
                 mPairDeviceButton.setText(R.string.pair_device_button);
+                mConnectDeviceButton.setEnabled(false);
+                mPairDeviceButton.setEnabled(false);
+                break;
+            case UNPAIRING:
+                mPairingTitleTextView.setText(R.string.unpairing_from_text);
+                mPairingProgressBar.setVisibility(View.VISIBLE);
+                mConnectDeviceButton.setText(R.string.connect_device_button);
+                mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(false);
                 break;
@@ -213,8 +280,6 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(true);
-                // Subscribe to user events
-                UserEventController.subscribe(new WearableUserEventManager(getApplicationContext()));
                 break;
             case CONNECTING:
                 mPairingTitleTextView.setText(R.string.connecting_to_text);
@@ -228,19 +293,22 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairingTitleTextView.setText(R.string.connected_to_text);
                 mPairingProgressBar.setVisibility(View.GONE);
                 mConnectDeviceButton.setText(R.string.disconnect_device_button);
-                mPairDeviceButton.setText(R.string.pair_device_button);
+                mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(false);
+                // Subscribe to user events
+                UserEventController.subscribe(new WearableUserEventManager(getApplicationContext()));
                 break;
-            case NOT_PAIRED:
+            case DISCONNECTING:
                 // Unsubscribe to user events
                 UserEventController.unsubscribe();
-
+                break;
+            case NOT_PAIRED:
                 mPairingTitleTextView.setText(R.string.not_paired_to_text);
                 mPairingProgressBar.setVisibility(View.GONE);
                 mConnectDeviceButton.setText(R.string.connect_device_button);
                 mPairDeviceButton.setText(R.string.pair_device_button);
-                mConnectDeviceButton.setEnabled(true);
+                mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(true);
                 break;
         }
@@ -255,7 +323,13 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
     public void onConnected(IWearableController iWearableController) {
         Log.d(TAG, "onConnected ");
         resetUi(PairingUiState.CONNECTED, PairingErrorType.NO_ERRORS);
-        sWearableController.getBatteryStatus();
+        mWearableController.getBatteryStatus();
+        WearableIdentity wearableIdentity = mWearableController.getWearableIdentity();
+        if (wearableIdentity != null) {
+            String deviceSoftwareRevision = wearableIdentity.getSoftwareRevision();
+            if (deviceSoftwareRevision != null)
+                mSoftwareRevisionTextView.setText(deviceSoftwareRevision);
+        }
     }
 
     @Override
@@ -266,7 +340,8 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
     @Override
     public void onDisconnected(IWearableController iWearableController) {
         Log.d(TAG, "onDisconnected ");
-        resetUi(PairingUiState.PAIRING, PairingErrorType.NO_ERRORS);
+        resetUi(mWearableController.isPaired() ? PairingUiState.PAIRED : PairingUiState.NOT_PAIRED,
+                PairingErrorType.NO_ERRORS);
     }
 
     @Override
@@ -286,10 +361,11 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
 
     @Override
     public void onFailure(IWearableController iWearableController, com.intel.wearable.platform.core.error.Error error) {
-        resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
+        resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, error.getErrorMessage());
         Toast.makeText(getApplication(), error.getErrorMessage(), Toast.LENGTH_LONG).show();
         Log.d(TAG, "onFailure: "+error.getErrorMessage());
-
+        //unpair();
+        //resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
     }
 }
 

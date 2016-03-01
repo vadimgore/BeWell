@@ -24,7 +24,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/BeWellTheme">
+            android:theme="@style/BeWellTheme"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +35,8 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
 
         <receiver android:name=".IncomingSms">
             <intent-filter>
@@ -45,11 +47,13 @@
         <activity
             android:name=".DeviceScanningActivity"
             android:label="@string/title_activity_device_scanning"
-            android:theme="@style/BeWellTheme" />
+            android:theme="@style/BeWellTheme"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".DevicePairingActivity"
             android:label="@string/title_activity_device_pairing"
-            android:theme="@style/BeWellTheme"></activity>
+            android:theme="@style/BeWellTheme"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

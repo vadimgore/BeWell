@@ -60,7 +60,7 @@ public class IncomingSms extends BroadcastReceiver {
                                 "caregiver_phone: " + care_giver_phone_number + ", senderNum: " + senderNum + ", message: " + message, duration);
                         toast.show();
 
-                        IWearableController wearableController = DevicePairingActivity.sWearableController;
+                        IWearableController wearableController = DevicePairingActivity.getWearableController();
                         INotificationController mNotificationController = wearableController.getNotificationController();
                         WearableNotification.VibrationPattern vibrationPattern = null;
                         WearableNotification.LedPattern ledPattern = null;
