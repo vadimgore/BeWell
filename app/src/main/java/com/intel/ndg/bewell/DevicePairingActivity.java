@@ -363,7 +363,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
     public void onFailure(IWearableController iWearableController, com.intel.wearable.platform.core.error.Error error) {
         resetUi(PairingUiState.ERROR, PairingErrorType.EXCEPTION, error.getErrorMessage());
         Toast.makeText(getApplication(), error.getErrorMessage(), Toast.LENGTH_LONG).show();
-        Log.d(TAG, "onFailure: "+error.getErrorMessage());
+        Log.d(TAG, "onFailure: " + error.getErrorMessage());
         //unpair();
         //resetUi(PairingUiState.NOT_PAIRED, PairingErrorType.NO_ERRORS);
     }

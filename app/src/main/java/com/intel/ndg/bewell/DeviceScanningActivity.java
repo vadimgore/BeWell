@@ -3,9 +3,10 @@ package com.intel.ndg.bewell;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,9 +19,9 @@ import com.intel.wearable.platform.core.device.IWearableScanner;
 import com.intel.wearable.platform.core.device.WearableScannerFactory;
 import com.intel.wearable.platform.core.device.WearableToken;
 import com.intel.wearable.platform.core.device.listeners.IWearableScannerListener;
+import com.intel.wearable.platform.core.util.Logger;
 
 import java.util.ArrayList;
-import com.intel.wearable.platform.core.util.Logger;
 
 public class DeviceScanningActivity extends AppCompatActivity {
 
@@ -64,6 +65,17 @@ public class DeviceScanningActivity extends AppCompatActivity {
                     pairingActivityIntent.putExtra(DevicePairingActivity.WEARABLE_TOKEN, token);
                     startActivity(pairingActivityIntent);
                 }
+            }
+        });
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Snackbar.make(view, R.string.copyright, Snackbar.LENGTH_LONG)
+                        .setAction("Copyright", null).show();
+
             }
         });
 
