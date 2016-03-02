@@ -264,6 +264,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.pair_device_button);
                 mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(false);
+                MainActivity.sDeviceStatusText.setText("Pairing");
                 break;
             case UNPAIRING:
                 mPairingTitleTextView.setText(R.string.unpairing_from_text);
@@ -272,6 +273,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(false);
+                MainActivity.sDeviceStatusText.setText("Unpairing");
                 break;
             case PAIRED:
                 mPairingTitleTextView.setText(R.string.paired_to_text);
@@ -280,6 +282,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(true);
+                MainActivity.sDeviceStatusText.setText("Paired");
                 break;
             case CONNECTING:
                 mPairingTitleTextView.setText(R.string.connecting_to_text);
@@ -288,6 +291,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.pair_device_button);
                 mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(false);
+                MainActivity.sDeviceStatusText.setText("Connecting");
                 break;
             case CONNECTED:
                 mPairingTitleTextView.setText(R.string.connected_to_text);
@@ -296,11 +300,13 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.unpair_device_button);
                 mConnectDeviceButton.setEnabled(true);
                 mPairDeviceButton.setEnabled(false);
+                MainActivity.sDeviceStatusText.setText("Connected");
                 // Subscribe to user events
                 UserEventController.subscribe(new WearableUserEventManager(getApplicationContext()));
                 break;
             case DISCONNECTING:
                 // Unsubscribe to user events
+                MainActivity.sDeviceStatusText.setText("Disconnecting");
                 UserEventController.unsubscribe();
                 break;
             case NOT_PAIRED:
@@ -310,6 +316,7 @@ public class DevicePairingActivity extends AppCompatActivity implements IWearabl
                 mPairDeviceButton.setText(R.string.pair_device_button);
                 mConnectDeviceButton.setEnabled(false);
                 mPairDeviceButton.setEnabled(true);
+                MainActivity.sDeviceStatusText.setText("Not paired");
                 break;
         }
     }

@@ -15,6 +15,8 @@ import com.intel.wearable.platform.core.device.IWearableController;
 import com.intel.wearable.platform.core.notification.INotificationController;
 import com.intel.wearable.platform.core.notification.WearableNotification;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Vadim on 2/20/2016.
  */
@@ -101,6 +103,11 @@ public class IncomingSms extends BroadcastReceiver {
                             // Setting CR Response waiting state
                             Application.setCRResponseWaitingState(true);
 
+                            // Setting latest SMS request date and time
+                            long date = System.currentTimeMillis();
+                            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a");
+                            String dateString = sdf.format(date);
+                            MainActivity.sLatestInquiryDateTime.setText(dateString);
                         }
                     }
 

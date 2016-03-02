@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,13 +8,118 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.intel.ndg.bewell.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:id="@+id/StatusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/sdk_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"
+            android:text="SDK status:"/>
+
+        <TextView
+            android:id="@+id/sdk_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:textColor="@color/blue"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/device_status_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"
+            android:text="Device status:"/>
+
+        <TextView
+            android:id="@+id/device_status_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/latest_inquiry_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"
+            android:text="Latest inquiry:"/>
+
+        <TextView
+            android:id="@+id/latest_inquiry_date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/latest_response_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:textColor="@color/blue"
+            android:textSize="16dp"
+            android:text="Latest response:"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/latest_response_date_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue"
+                android:textSize="16dp"/>
+
+            <TextView
+                android:id="@+id/latest_response_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ltred"
+                android:layout_weight="1"
+                android:textSize="16dp"/>
+            </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
