@@ -3,11 +3,15 @@ package com.intel.ndg.bewell;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Intent mSettingsIntent;
     private Intent mDeviceScanningIntent;
+    private static Handler sActivityHandler;
+    private static Runnable sActivityHandlerTask;
+    private static Integer sInactivityThreshold;
+
+    private SharedPreferences.OnSharedPreferenceChangeListener mSPChangeListener;
 
     public static Context mContext;
 
@@ -27,13 +36,14 @@ public class MainActivity extends AppCompatActivity {
     public static TextView sLatestInquiryDateTime;
     public static TextView sLatestResponseDateTime;
     public static TextView sLatestResponseText;
+    public static TextView sLatestActivityDateTime;
+    public static TextView sLatestActivityText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         sLatestInquiryDateTime = (TextView) findViewById(R.id.latest_inquiry_date_time);
         sLatestResponseDateTime = (TextView) findViewById(R.id.latest_response_date_time);
         sLatestResponseText = (TextView) findViewById(R.id.latest_response_text);
+        sLatestActivityDateTime = (TextView) findViewById(R.id.latest_activity_date_time);
+        sLatestActivityText = (TextView) findViewById(R.id.latest_activity_text);
 
         Application.init(new ICoreInitListener() {
             @Override
@@ -64,6 +76,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Register shared preferences change listener
+        mSPChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+                    @Override
+                    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                                          String key) {
+                        Log.i("PreferencesListener", "Changed shared preferences for " + key);
+                        if (key.equals("inactivity_threshold")) {
+                            sInactivityThreshold = 1000 * Integer.decode(sharedPreferences.getString(key, ""));
+                            // Start inactivity monitoring task
+                            sActivityHandler = new Handler();
+                            sActivityHandlerTask = new Runnable() {
+                                @Override
+                                public void run() {
+                                    InactivityNotification inNot = new InactivityNotification(mContext);
+                                    sActivityHandler.removeCallbacks(sActivityHandlerTask);
+                                    if (sInactivityThreshold > 0 )
+                                        sActivityHandler.postDelayed(sActivityHandlerTask, sInactivityThreshold);
+                                }
+                            };
+                            sActivityHandler.postDelayed(sActivityHandlerTask, sInactivityThreshold);
+                        }
+                    }
+                };
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        prefs.registerOnSharedPreferenceChangeListener(mSPChangeListener);
     }
 
     @Override
@@ -102,6 +139,28 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 sLatestResponseDateTime.setText(date);
                 sLatestResponseText.setText(message);
+            }
+        });
+    }
+
+    public static void updateActivityUI(final String date, final String message){
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                sLatestActivityDateTime.setText(date);
+                sLatestActivityText.setText(message);
+            }
+        });
+    }
+
+    public static void resetInactivityHandler() {
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                sActivityHandler.removeCallbacks(sActivityHandlerTask);
+                sActivityHandler.postDelayed(sActivityHandlerTask, sInactivityThreshold);
             }
         });
     }

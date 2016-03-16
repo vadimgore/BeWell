@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.intel.wearable.platform.core.device.IWearableController;
 import com.intel.wearable.platform.core.notification.INotificationController;
@@ -57,11 +56,12 @@ public class IncomingSms extends BroadcastReceiver {
                     // Show Alert
                     if (phoneNumber.contains(care_giver_phone_number) &&
                             care_giver_message.toLowerCase().contentEquals(message.toLowerCase())) {
+                        /*
                         int duration = Toast.LENGTH_LONG;
                         Toast toast = Toast.makeText(context,
                                 "caregiver_phone: " + care_giver_phone_number + ", senderNum: " + senderNum + ", message: " + message, duration);
                         toast.show();
-
+                        */
                         IWearableController wearableController = DevicePairingActivity.getWearableController();
                         INotificationController mNotificationController = wearableController.getNotificationController();
                         WearableNotification.VibrationPattern vibrationPattern = null;

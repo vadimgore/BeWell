@@ -29,6 +29,11 @@
     <string name="pref_title_double_button_press">Double button press</string>
     <string name="pref_title_long_button_press">Long button press</string>
 
+    <!-- Example settings for Body events -->
+    <string name="pref_header_user_activity">User Activity</string>
+    <string name="inactivity_threshold">Inactivity Threshold</string>
+    <string name="pref_user_activity">Activity Notifications</string>
+
     <string-array name="pref_haptic_list_titles">
         <item>High</item>
         <item>Medium</item>

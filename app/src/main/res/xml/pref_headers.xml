@@ -17,4 +17,9 @@
         android:icon="@drawable/user_response"
         android:title="@string/pref_header_user_response" />
 
+    <header
+        android:fragment="com.intel.ndg.bewell.SettingsActivity$UserActivityPreferenceFragment"
+        android:icon="@drawable/user_activity"
+        android:title="@string/pref_header_user_activity" />
+
 </preference-headers>
