@@ -34,4 +34,9 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_title_led_color" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="receipt_switch"
+        android:title="@string/pref_title_receipt" />
+
 </PreferenceScreen>

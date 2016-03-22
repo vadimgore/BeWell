@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     public static TextView sLatestResponseText;
     public static TextView sLatestActivityDateTime;
     public static TextView sLatestActivityText;
+    public static TextView sStepCountText;
+    public static TextView sDistanceText;
+    public static TextView sCaloriesText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
         sLatestResponseText = (TextView) findViewById(R.id.latest_response_text);
         sLatestActivityDateTime = (TextView) findViewById(R.id.latest_activity_date_time);
         sLatestActivityText = (TextView) findViewById(R.id.latest_activity_text);
+        sStepCountText = (TextView) findViewById(R.id.step_count);
+        sDistanceText =  (TextView) findViewById(R.id.distance);
+        sCaloriesText =  (TextView) findViewById(R.id.calories);
 
         Application.init(new ICoreInitListener() {
             @Override
@@ -143,13 +149,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void updateActivityUI(final String date, final String message){
+    public static void updateActivityUI(final String date, final String step_count,
+                                        final String distance, final String calories,
+                                        final String status, final String type){
         ((Activity) mContext).runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
                 sLatestActivityDateTime.setText(date);
-                sLatestActivityText.setText(message);
+                sStepCountText.setText(step_count + " steps");
+                sDistanceText.setText(distance + " meters");
+                sCaloriesText.setText(calories);
+                sLatestActivityText.setText(status + " " + type);
             }
         });
     }
@@ -159,8 +170,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                sActivityHandler.removeCallbacks(sActivityHandlerTask);
-                sActivityHandler.postDelayed(sActivityHandlerTask, sInactivityThreshold);
+                if (sActivityHandler != null) {
+                    sActivityHandler.removeCallbacks(sActivityHandlerTask);
+                    sActivityHandler.postDelayed(sActivityHandlerTask, sInactivityThreshold);
+                }
             }
         });
     }

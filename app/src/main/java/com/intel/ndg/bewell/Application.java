@@ -6,6 +6,7 @@ import android.util.Log;
 import com.intel.wearable.platform.body.Body;
 import com.intel.wearable.platform.body.listen.ActivityIntervalListener;
 import com.intel.wearable.platform.body.model.ActivityInterval;
+import com.intel.wearable.platform.body.model.ActivityStepInterval;
 import com.intel.wearable.platform.body.model.BiologicalSex;
 import com.intel.wearable.platform.body.model.Profile;
 import com.intel.wearable.platform.body.persistence.BodyDataStore;
@@ -23,6 +24,10 @@ public class Application extends android.app.Application {
     private static Application instance;
     private static boolean sIsInitialized = false;
     private static boolean sAwatingCRResponse = false;
+
+    private static Integer total_step_count = 0;
+    private static double total_distance = 0.0;
+    private static double total_calories = 0.0;
 
     @Override
     public void onCreate() {
@@ -57,8 +62,17 @@ public class Application extends android.app.Application {
                     Log.i("Listener", String.format("ActivityInterval(%s) received.", interval.uuid));
                     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
+                    total_step_count += ((ActivityStepInterval) interval).stepCount;
+                    total_distance += ((ActivityStepInterval) interval).metersTraveled;
+                    total_calories += ((ActivityStepInterval) interval).caloriesBurned;
+
                     MainActivity.updateActivityUI(dateFormat.format(new Date()),
-                            interval.status + " " + interval.type);
+                            String.valueOf(total_step_count),
+                            String.format("%.2f", total_distance),
+                            String.format("%.0f", total_calories),
+                            String.valueOf(interval.status),
+                            String.valueOf(interval.type));
+
                     MainActivity.resetInactivityHandler();
                 }
             }
@@ -75,4 +89,8 @@ public class Application extends android.app.Application {
     }
     public static boolean isAwatingCRResponse() { return sAwatingCRResponse; }
     public static void setCRResponseWaitingState(boolean state) { sAwatingCRResponse = state; }
+    public static String getActivityReport() {
+        return String.format("Steps %d, Distance %.2f meters, Calories %.0f",
+                total_step_count, total_distance, total_calories);
+    }
 }

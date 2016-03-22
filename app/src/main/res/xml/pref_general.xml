@@ -12,13 +12,21 @@
         android:title="@string/pref_title_care_giver_phone" />
 
     <EditTextPreference
-        android:key="caregiver_message"
+        android:key="wellbeing_message"
         android:defaultValue=""
         android:inputType="textShortMessage"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="@string/pref_title_care_giver_message" />
+        android:title="@string/pref_title_wellbeing_message" />
 
+    <EditTextPreference
+        android:key="activity_message"
+        android:defaultValue=""
+        android:inputType="textShortMessage"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_activity_message" />
 
 </PreferenceScreen>

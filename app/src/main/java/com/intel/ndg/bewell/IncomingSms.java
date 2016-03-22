@@ -33,11 +33,14 @@ public class IncomingSms extends BroadcastReceiver {
 
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
             final String care_giver_phone_number = prefs.getString("caregiver_phone_number", "");
-            final String care_giver_message = prefs.getString("caregiver_message", "");
+            final String wellbeing_message = prefs.getString("wellbeing_message", "");
+            final String activity_message = prefs.getString("activity_message", "");
             final Boolean led_switch = prefs.getBoolean("led_switch", false);
             final Integer led_color = Integer.decode(prefs.getString("led_list", ""));
             final Boolean haptic_switch = prefs.getBoolean("haptic_switch", false);
             final Integer haptic_intensity = Integer.decode(prefs.getString("haptic_list", ""));
+            final Boolean receipt_switch = prefs.getBoolean("receipt_switch", false);
+            final OutgoingSms smsSender = new OutgoingSms();
 
             if (bundle != null) {
 
@@ -53,10 +56,11 @@ public class IncomingSms extends BroadcastReceiver {
 
                     Log.i("SmsReceiver", "caregiver_phone: " + care_giver_phone_number + "; senderNum: "+ senderNum + "; message: " + message);
 
-                    // Show Alert
+
                     if (phoneNumber.contains(care_giver_phone_number) &&
-                            care_giver_message.toLowerCase().contentEquals(message.toLowerCase())) {
+                            wellbeing_message.toLowerCase().contentEquals(message.toLowerCase())) {
                         /*
+                        // Show Alert
                         int duration = Toast.LENGTH_LONG;
                         Toast toast = Toast.makeText(context,
                                 "caregiver_phone: " + care_giver_phone_number + ", senderNum: " + senderNum + ", message: " + message, duration);
@@ -100,6 +104,11 @@ public class IncomingSms extends BroadcastReceiver {
                             }
                             mNotificationController.sendNotification(notification);
 
+                            if (receipt_switch) {
+                                smsSender.sendCRResponse(care_giver_phone_number,
+                                        "Auto response: notification delivered!");
+                            }
+
                             // Setting CR Response waiting state
                             Application.setCRResponseWaitingState(true);
 
@@ -109,6 +118,12 @@ public class IncomingSms extends BroadcastReceiver {
                             String dateString = sdf.format(date);
                             MainActivity.sLatestInquiryDateTime.setText(dateString);
                         }
+                    }
+                    else if ((phoneNumber.contains(care_giver_phone_number) &&
+                            activity_message.toLowerCase().contentEquals(message.toLowerCase()))) {
+
+                        String activity_report = Application.getActivityReport();
+                        smsSender.sendCRResponse(care_giver_phone_number, activity_report);
                     }
 
                 } // end for loop
